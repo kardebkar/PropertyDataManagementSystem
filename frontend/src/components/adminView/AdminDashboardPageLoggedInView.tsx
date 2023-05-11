@@ -61,12 +61,12 @@ const AdminDashboardPageLoggedInView = () => {
 
     return (
         <>
-            <Button
+            {/* <Button
                 className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
                 onClick={() => setShowAddUserDialog(true)}>
                 <FaPlus />
                 Add new User
-            </Button>
+            </Button> */}
             {usersLoading && <Spinner animation='border' variant='primary' />}
             {showUsersLoadingError && <p>Something went wrong. Please refresh the page.</p>}
             {!usersLoading && !showUsersLoadingError &&
