@@ -22,12 +22,46 @@ interface SignUpBody{
     username?: string,
     email?: string,
     password?: string,
+    role?: string,
+    first_name?: string,
+    last_name?: string,
+    phone_number?: string,
+    address?: string,
+    city?: string,
+    state?: string,
+    zip_code?: string,
+    country?: string,
+    is_active?: boolean,
+    is_verified?: boolean,
+    is_deleted?: boolean,
+    created_at?: Date,
+    updated_at?: Date,
+    deleted_at?: Date,
+    communication_preferences?: string,
+
 }
 
 export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async(req, res, next)=>{
     const username = req.body.username;
     const email = req.body.email;
     const passwordRaw = req.body.password;
+    const role = req.body.role;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const phone_number = req.body.phone_number;
+    const address = req.body.address;
+    const city = req.body.city;
+    const state = req.body.state;
+    const zip_code = req.body.zip_code;
+    const country = req.body.country;
+    const is_active = req.body.is_active;
+    const is_verified = req.body.is_verified;
+    const is_deleted = req.body.is_deleted;
+    const created_at = req.body.created_at;
+    const updated_at = req.body.updated_at;
+    const deleted_at = req.body.deleted_at;
+    const communication_preferences = req.body.communication_preferences;
+
 
     try {
         if(!username || !email || !passwordRaw){
@@ -52,6 +86,21 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = asy
             username: username,
             email: email,
             password: passwordHashed,
+
+            role: role,
+            first_name: first_name,
+            last_name: last_name,
+            phone_number: phone_number,
+            address: address,
+            city: city,
+            state: state,
+            zip_code: zip_code,
+            country: country,
+            is_active: true,
+            is_verified: false,
+            is_deleted: false,
+            communication_preferences: communication_preferences,
+
         });
 
         req.session.userId=newUser._id;
