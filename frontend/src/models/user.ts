@@ -1,4 +1,5 @@
 export interface User{
+    _id: string,
     username: string,
     email: string,
     password: string,
@@ -14,9 +15,9 @@ export interface User{
     is_active: boolean,
     is_verified: boolean,
     is_deleted: boolean,
-    created_at: Date,
-    updated_at: Date,
-    deleted_at: Date,
+    createdAt: string,
+    updatedAt: string,
+    deleted_at: string,
     communication_preferences: string,
     
 }

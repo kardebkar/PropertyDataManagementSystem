@@ -2,6 +2,8 @@ import  { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel from "../models/user";
 import bcrypt from "bcrypt";
+import { assertIsDefined } from "../util/assertIsDefined";
+import mongoose from "mongoose";
 
 
 
@@ -155,4 +157,51 @@ export const logout: RequestHandler = (req, res, next)=>{
             res.sendStatus(200);
         }
     })
+};
+
+
+
+
+export const getUsers:RequestHandler = async (req, res, next)=>{
+    const authenticatedUserId=req.session.userId;
+    
+    
+    try {
+        
+        assertIsDefined(authenticatedUserId);
+
+        const users = await UserModel.find().exec();
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+export const deleteUser: RequestHandler = async(req,res,next)=>{
+    const userId=req.params.noteId;
+    const authenticatedUserId=req.session.userId;
+    try {
+        assertIsDefined(authenticatedUserId);
+        if(!mongoose.isValidObjectId(userId)){
+            throw createHttpError(400,"Invalid User id.");
+        }
+        const userToDelete = await UserModel.findById(userId).exec();
+
+        if(!userToDelete){
+            throw createHttpError(404,"User Not Found!");
+        }
+        if(userToDelete.id===(authenticatedUserId)){
+            throw createHttpError(406,"You cannot delete yourself while you are logged in!");
+        }
+
+
+        await userToDelete.deleteOne();
+
+        res.sendStatus(204);
+        
+    } catch (error) {
+        next(error);
+    }
 };

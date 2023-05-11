@@ -11,6 +11,8 @@ import PrivacyPage from "./pages/PrivacyPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import styles from "./styles/App.module.css";
 
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -45,6 +47,11 @@ function App() {
 			
 			path='/'
 			element={<NotesPage loggedInUser={loggedInUser} />}
+			/>
+      <Route 
+			
+			path='/adminDashboardPage'
+			element={<AdminDashboardPage loggedInUser={loggedInUser} />}
 			/>
 			<Route
 				path='/privacy'
