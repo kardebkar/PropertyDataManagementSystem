@@ -1,6 +1,40 @@
 import { ConflictError, UnauthorizedError } from "../errors/http_errors";
 import { User } from "../models/user";
 
+
+
+export interface SignUpCredentials{
+    username: string,
+    email: string,
+    password: string,
+    role: string,
+    first_name: string,
+    last_name: string,
+    phone_number: string,
+    address: string,
+    city: string,
+    state: string,
+    zip_code: string,
+    country: string,
+    is_active: boolean,
+    is_verified: boolean,
+    is_deleted: boolean,
+    communication_preferences: string,
+    
+}
+
+export async function signUp(credentials: SignUpCredentials): Promise<User>{
+    const response = await fetchData("/api/users/signup",{
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+    });
+    return response.json();
+}
+
+
 async function fetchData(input: RequestInfo, init?: RequestInit){
     const response = await fetch(input, init);
     if(response.ok){
@@ -94,7 +128,39 @@ export async function deleteUser(userId: string){
     
 // }
 
+export interface UserInput{
+    _id: string,
+    username: string,
+    email: string,
+    password: string,
+    role: string,
+    first_name: string,
+    last_name: string,
+    phone_number: string,
+    address: string,
+    city: string,
+    state: string,
+    zip_code: string,
+    country: string,
+    is_active: boolean,
+    is_verified: boolean,
+    is_deleted: boolean,
+    communication_preferences: string,
+}
 
+
+
+
+export async function updateUser(_id: string, user: UserInput): Promise<User>{
+    const response = await fetchData("/api/users/"+_id,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json",
+        },
+        body:JSON.stringify(user),
+    });
+    return response.json();
+}
 
 
 
