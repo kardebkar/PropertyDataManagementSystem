@@ -15,3 +15,26 @@ const ownerDetailsSchemaMain = new Schema({
 type IOwnerDetailsMainModel = InferSchemaType<typeof ownerDetailsSchemaMain>;
 
 export default model<IOwnerDetailsMainModel>("OwnerDetails", ownerDetailsSchemaMain);
+
+
+
+export interface IOwnerDetailsCreateModel {
+    userId: Schema.Types.ObjectId;
+    ownerName:string;
+    ownerMobileNo:string;
+    ownerEmail:string;
+    ownerWebsite:string;
+}
+
+
+export interface IOwnerDetailsUpdateParamsModel{
+    ownerId:string;
+}
+
+export interface IOwnerDetailsUpdateBodyModel{
+    userId: Schema.Types.ObjectId;
+    ownerName:string;
+    ownerMobileNo:string;
+    ownerEmail:string;
+    ownerWebsite:string;
+}
