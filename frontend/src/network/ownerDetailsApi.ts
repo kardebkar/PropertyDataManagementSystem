@@ -27,7 +27,7 @@ async function apiCall(input: RequestInfo, init?: RequestInit){
 
 //GetAllOwnerDetails
 export async function getAllOwnerDetails():Promise<IOwnerDetailsViewModel[]>{
-    const response=await apiCall("/api/ownerDetails",{method:"GET"});
+    const response=await apiCall("/api/ownerDetails/all",{method:"GET"});
     const ownerDetails=await response.json();
     return ownerDetails;
 }
