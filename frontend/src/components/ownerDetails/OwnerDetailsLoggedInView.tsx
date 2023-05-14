@@ -1,25 +1,22 @@
-import React, { useEffect, useState, useMemo } from "react";
 import * as OwnerDetailsApi from "../../network/ownerDetailsApi";
 import * as UsersApi from "../../network/users_api";
 import * as UserModel from "../../models/user";
 import * as OwnerDetailsModel from "../../models/ownerDetails";
 import ownerDetailsPageStyle from "../../styles/OwnerDetailsPage.module.css";
 
-import { Container } from "@mui/material";
-import MaterialReactTable, {
-  type MRT_ColumnDef,
-} from "material-react-table";
-import { formatDate } from "../../utils/formatDate";
+import * as commonImports from "../../commonCode/importMRTRelated";
 
+
+//This stores all the users retrieved from the database
 let usersArr:UserModel.User[]=[];
 
 const OwnerDetailsLoggedInView = () => {
-  const [ownerDetailsArr, setOwnerDetailsArr] = useState<OwnerDetailsModel.IOwnerDetailsViewModel[]>([]);
-  const [validationErrors, setValidationErrors] = useState<{
+  const [ownerDetailsArr, setOwnerDetailsArr] = commonImports.useState<OwnerDetailsModel.IOwnerDetailsViewModel[]>([]);
+  const [validationErrors, setValidationErrors] = commonImports.useState<{
     [cellId: string]: string;
   }>({});
 
-  useEffect(() => {
+  commonImports.useEffect(() => {
 
     UsersApi.fetchUsers().then((response) => {
       usersArr=response;
@@ -32,7 +29,7 @@ const OwnerDetailsLoggedInView = () => {
     });
   }, []);
 
-  const ownerDetailsGridColumns = useMemo<MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>[]>( 
+  const ownerDetailsGridColumns = commonImports.useMemo<commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>[]>( 
     () => [
       {
         header: "Owner Details Id",
@@ -73,13 +70,13 @@ const OwnerDetailsLoggedInView = () => {
         header: "Created Date",
         accessorKey: "createdAt",
         //customize normal cell render on normal non-aggregated rows
-        Cell: ({ cell }) => <>{formatDate(cell.getValue<string>())}</>,
+        Cell: ({ cell }) => <>{commonImports.formatDate(cell.getValue<string>())}</>,
       },
       {
         header: "Updated Date",
         accessorKey: "updatedAt",
         //customize normal cell render on normal non-aggregated rows
-        Cell: ({ cell }) => <>{formatDate(cell.getValue<string>())}</>,
+        Cell: ({ cell }) => <>{commonImports.formatDate(cell.getValue<string>())}</>,
       },
     ],
     []
@@ -92,8 +89,8 @@ const OwnerDetailsLoggedInView = () => {
   return (
     <>
       <h1>Owner Details Logged In View</h1>
-      <Container className={ownerDetailsPageStyle.pageContainer}>
-        <MaterialReactTable
+      <commonImports.Container className={ownerDetailsPageStyle.pageContainer}>
+        <commonImports.MaterialReactTable
           displayColumnDefOptions={
             {
               "mrt-row-actions": {
@@ -114,7 +111,7 @@ const OwnerDetailsLoggedInView = () => {
             },
           }}
         />
-      </Container>
+      </commonImports.Container>
     </>
   );
 };
