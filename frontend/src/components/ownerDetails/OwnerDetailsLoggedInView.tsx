@@ -43,11 +43,11 @@ const OwnerDetailsLoggedInView = () => {
 
     // Send the API request to update the Owner
     OwnerDetailsApi.createOwnerDetails(insertOwnerDetailsInput).then(() => {
-      console.log("Owner Details added!");
-    });
-    OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
-      setOwnerDetailsArr(ownerDetails);
-      console.log(ownerDetails);
+      OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
+        setOwnerDetailsArr(ownerDetails);
+        console.log("Owner Details added!");
+        console.log(ownerDetails);
+      });
     });
   };
 
@@ -180,17 +180,25 @@ const OwnerDetailsLoggedInView = () => {
         editable: "never",
       },
       {
-        header: "User Id",
+        header: "User Name",
         accessorKey: "userId",
         //customize normal cell render on normal non-aggregated rows
-        Cell: ({ cell }) => (
-          <>
-            {
-              usersArr.find((user) => user._id === cell.getValue<string>())
-                ?.username
-            }
-          </>
-        ),
+        Cell: ({ cell }) => {
+          const userId = cell.getValue<string>();
+          const user = usersArr.find((user) => user._id === userId);
+        
+          if (user) {
+            const { username, role } = user;
+            return (
+              <>
+                {`${username} - ${role}`}
+              </>
+            );
+          }
+        
+          return null;
+        }
+        
       },
       {
         header: "Owner Details Name",
@@ -278,9 +286,13 @@ const OwnerDetailsLoggedInView = () => {
               Create New Owner
             </commonImports.Button>
           )}
-
-
         />
+        <CreateNewAccountModal
+        columns={ownerDetailsGridColumns}
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSubmit={handleCreateNewRow}
+      />
       </commonImports.Container>
     </>
   );
@@ -350,7 +362,7 @@ export const CreateNewAccountModal = ({
                   sx={{ minWidth: 120 }}
                 >
                   <commonImports.MenuItem value="" disabled>
-                    Select a Owner Type
+                    Select a User
                   </commonImports.MenuItem>
                   {usersArr.map((option) => (
                     <commonImports.MenuItem
@@ -366,7 +378,10 @@ export const CreateNewAccountModal = ({
             {columns
               .filter(
                 (column) =>
-                  column.accessorKey !== "_id" 
+                  column.accessorKey !== "_id"
+                  && column.accessorKey !== "userId"
+                  && column.accessorKey !== "createdAt"
+                  && column.accessorKey !== "updatedAt"
               )
               .map((column) => (
                 <commonImports.TextField

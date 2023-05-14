@@ -41,7 +41,7 @@ export async function getOneOwnerDetails(ownerId:string):Promise<IOwnerDetailsVi
 
 //CreateOwnerDetails
 export async function createOwnerDetails(ownerDetails:IOwnerDetailsInputModel):Promise<IOwnerDetailsViewModel>{
-    const response=await apiCall("/api/ownerDetails",{
+    const response=await apiCall("/api/ownerDetails/create",{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
@@ -69,20 +69,6 @@ export async function updateOwnerDetails(ownerId:string,ownerDetails:IOwnerDetai
 export async function deleteOwnerDetails(ownerId:string){
     await apiCall("/api/ownerDetails/delete/"+ownerId,{method:"DELETE"});
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
