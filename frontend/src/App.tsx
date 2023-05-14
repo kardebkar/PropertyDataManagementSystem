@@ -12,6 +12,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import styles from "./styles/App.module.css";
 
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import OwnerDetailsPage from "./pages/OwnerDetailsPage";
 
 
 function App() {
@@ -53,6 +54,10 @@ function App() {
 			path='/adminDashboardPage'
 			element={<AdminDashboardPage loggedInUser={loggedInUser} />}
 			/>
+      <Route
+      path='/ownerDetailsPage'
+      element={<OwnerDetailsPage loggedInUser={loggedInUser} />}
+      />
 			<Route
 				path='/privacy'
 				element={<PrivacyPage />}
