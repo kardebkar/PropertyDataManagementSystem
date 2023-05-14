@@ -54,7 +54,7 @@ export async function createOwnerDetails(ownerDetails:IOwnerDetailsInputModel):P
 
 //UpdateOwnerDetails
 export async function updateOwnerDetails(ownerId:string,ownerDetails:IOwnerDetailsInputModel):Promise<IOwnerDetailsViewModel>{
-    const response=await apiCall("/api/ownerDetails/"+ownerId,{
+    const response=await apiCall("/api/ownerDetails/update/"+ownerId,{
         method:"PATCH",
         headers:{
             "Content-Type":"application/json"
@@ -67,7 +67,7 @@ export async function updateOwnerDetails(ownerId:string,ownerDetails:IOwnerDetai
 
 //DeleteOwnerDetails
 export async function deleteOwnerDetails(ownerId:string){
-    await apiCall("/api/ownerDetails/"+ownerId,{method:"DELETE"});
+    await apiCall("/api/ownerDetails/delete/"+ownerId,{method:"DELETE"});
 }
 
 
