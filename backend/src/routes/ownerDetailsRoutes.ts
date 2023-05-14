@@ -5,10 +5,10 @@ import * as OwnerDetailsController from "../controllers/ownerDetailsController";
 const router = express.Router();
 
 router.get("/all",OwnerDetailsController.getAllOwnerDetails);
-router.get("/one/:id",OwnerDetailsController.getOneOwnerDetails);
+router.get("/one/:ownerId",OwnerDetailsController.getOneOwnerDetails);
 router.post("/create",OwnerDetailsController.createOwnerDetails);
-router.patch("/update/:id",OwnerDetailsController.updateOwnerDetails);
-router.delete("/delete/:id",OwnerDetailsController.deleteOwnerDetails);
+router.patch("/update/:ownerId",OwnerDetailsController.updateOwnerDetails);
+router.delete("/delete/:ownerId",OwnerDetailsController.deleteOwnerDetails);
 
 
 
