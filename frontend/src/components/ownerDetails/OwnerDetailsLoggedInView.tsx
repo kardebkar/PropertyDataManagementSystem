@@ -186,19 +186,14 @@ const OwnerDetailsLoggedInView = () => {
         Cell: ({ cell }) => {
           const userId = cell.getValue<string>();
           const user = usersArr.find((user) => user._id === userId);
-        
+
           if (user) {
             const { username, role } = user;
-            return (
-              <>
-                {`${username} - ${role}`}
-              </>
-            );
+            return <>{`${username} - ${role}`}</>;
           }
-        
+
           return null;
-        }
-        
+        },
       },
       {
         header: "Owner Details Name",
@@ -257,7 +252,6 @@ const OwnerDetailsLoggedInView = () => {
               _id: false, //hide firstName column by default
             },
           }}
-
           editingMode="modal" //default
           enableEditing
           onEditingRowSave={handleSaveRowEdits}
@@ -265,18 +259,22 @@ const OwnerDetailsLoggedInView = () => {
           renderRowActions={({ row, table }) => (
             <commonImports.Box sx={{ display: "flex", gap: "1rem" }}>
               <commonImports.Tooltip arrow placement="left" title="Edit">
-                <commonImports.IconButton onClick={() => table.setEditingRow(row)}>
+                <commonImports.IconButton
+                  onClick={() => table.setEditingRow(row)}
+                >
                   <commonImports.Edit />
                 </commonImports.IconButton>
               </commonImports.Tooltip>
               <commonImports.Tooltip arrow placement="right" title="Delete">
-                <commonImports.IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                <commonImports.IconButton
+                  color="error"
+                  onClick={() => handleDeleteRow(row)}
+                >
                   <commonImports.Delete />
                 </commonImports.IconButton>
               </commonImports.Tooltip>
             </commonImports.Box>
           )}
-
           renderTopToolbarCustomActions={() => (
             <commonImports.Button
               color="secondary"
@@ -288,16 +286,15 @@ const OwnerDetailsLoggedInView = () => {
           )}
         />
         <CreateNewAccountModal
-        columns={ownerDetailsGridColumns}
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onSubmit={handleCreateNewRow}
-      />
+          columns={ownerDetailsGridColumns}
+          open={createModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+          onSubmit={handleCreateNewRow}
+        />
       </commonImports.Container>
     </>
   );
 };
-
 
 interface CreateModalProps {
   columns: commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>[];
@@ -305,8 +302,6 @@ interface CreateModalProps {
   onSubmit: (values: OwnerDetailsModel.IOwnerDetailsViewModel) => void;
   open: boolean;
 }
-
-
 
 //example of creating a mui dialog modal for creating new rows
 export const CreateNewAccountModal = ({
@@ -323,16 +318,52 @@ export const CreateNewAccountModal = ({
   );
 
   const [selectedOwnerType, setSelectedOwnerType] = commonImports.useState("");
+  const [errors, setErrors] = commonImports.useState<{ [key: string]: string }>(
+    {}
+  );
+
+  const validate = () => {
+    let tempErrors = {};
+    tempErrors = {
+      ...tempErrors,
+      userId: values.userId ? "" : "This field is required",
+      ownerEmail: values.ownerEmail
+        ? /\S+@\S+\.\S+/.test(values.ownerEmail)
+          ? ""
+          : "Email is not valid"
+        : "This field is required",
+      ownerWebsite: values.ownerWebsite
+        ? /^(ftp|http|https):\/\/[^ "]+$/.test(values.ownerWebsite)
+          ? ""
+          : "URL is not valid"
+        : "This field is required",
+      ownerName: values.ownerName ? "" : "This field is required",
+      ownerMobileNo: values.ownerMobileNo
+        ? /^[1-9][0-9]{9}$/.test(values.ownerMobileNo)
+          ? ""
+          : "Please enter a valid mobile number"
+        : "This field is required",
+    };
+    setErrors({
+      ...tempErrors,
+    });
+
+    return Object.values(tempErrors).every((x) => x === "");
+  };
 
   const handleSubmit = () => {
     //put your validation logic here
-    onSubmit(values);
-    onClose();
+    if (validate()) {
+      onSubmit(values);
+      onClose();
+    }
   };
 
   return (
     <commonImports.Dialog open={open}>
-      <commonImports.DialogTitle textAlign="center">Create New Owner</commonImports.DialogTitle>
+      <commonImports.DialogTitle textAlign="center">
+        Create New Owner
+      </commonImports.DialogTitle>
       <commonImports.DialogContent>
         <form onSubmit={(e) => e.preventDefault()}>
           <commonImports.Stack
@@ -345,43 +376,52 @@ export const CreateNewAccountModal = ({
             {columns
               .filter((column) => column.accessorKey === "userId")
               .map((column) => (
-                <commonImports.Select
-                  label="User Id"
-                  key={column.accessorKey}
-                  name={column.accessorKey}
-                  value={selectedOwnerType}
-                  // onChange={(event) => setSelectedOwnerType(event.target.value)}
-                  onChange={(event) => {
-                    setValues({
-                      ...values,
-                      [event.target.name]: event.target.value,
-                    });
-                    setSelectedOwnerType(event.target.value);
-                  }}
-                  displayEmpty
-                  sx={{ minWidth: 120 }}
+                <commonImports.FormControl
+                  error={column.accessorKey && !!errors[column.accessorKey]}
                 >
-                  <commonImports.MenuItem value="" disabled>
-                    Select a User
-                  </commonImports.MenuItem>
-                  {usersArr.map((option) => (
-                    <commonImports.MenuItem
-                      key={option._id}
-                      value={option._id}
-                    >
-                      {option.username+" - "+option.role}
+                  <commonImports.Select
+                    label="User Id"
+                    key={column.accessorKey}
+                    name={column.accessorKey}
+                    value={selectedOwnerType}
+                    onChange={(event) => {
+                      setValues({
+                        ...values,
+                        [event.target.name]: event.target.value,
+                      });
+                      setSelectedOwnerType(event.target.value);
+                    }}
+                    displayEmpty
+                    sx={{ minWidth: 120 }}
+                  >
+                    <commonImports.MenuItem value="" disabled>
+                      Select a User
                     </commonImports.MenuItem>
-                  ))}
-                </commonImports.Select>
+                    {usersArr.map((option) => (
+                      <commonImports.MenuItem
+                        key={option._id}
+                        value={option._id}
+                      >
+                        {option.username + " - " + option.role}
+                      </commonImports.MenuItem>
+                    ))}
+                  </commonImports.Select>
+                  <commonImports.FormHelperText>
+                    {column.accessorKey &&
+                    errors.hasOwnProperty(column.accessorKey)
+                      ? errors[column.accessorKey]
+                      : ""}
+                  </commonImports.FormHelperText>
+                </commonImports.FormControl>
               ))}
 
             {columns
               .filter(
                 (column) =>
-                  column.accessorKey !== "_id"
-                  && column.accessorKey !== "userId"
-                  && column.accessorKey !== "createdAt"
-                  && column.accessorKey !== "updatedAt"
+                  column.accessorKey !== "_id" &&
+                  column.accessorKey !== "userId" &&
+                  column.accessorKey !== "createdAt" &&
+                  column.accessorKey !== "updatedAt"
               )
               .map((column) => (
                 <commonImports.TextField
@@ -391,6 +431,13 @@ export const CreateNewAccountModal = ({
                   onChange={(e) =>
                     setValues({ ...values, [e.target.name]: e.target.value })
                   }
+                  error={column.accessorKey && !!errors[column.accessorKey]}
+                  helperText={
+                    column.accessorKey &&
+                    errors.hasOwnProperty(column.accessorKey)
+                      ? errors[column.accessorKey]
+                      : ""
+                  }
                 />
               ))}
           </commonImports.Stack>
@@ -398,13 +445,16 @@ export const CreateNewAccountModal = ({
       </commonImports.DialogContent>
       <commonImports.DialogActions sx={{ p: "1.25rem" }}>
         <commonImports.Button onClick={onClose}>Cancel</commonImports.Button>
-        <commonImports.Button color="secondary" onClick={handleSubmit} variant="contained">
+        <commonImports.Button
+          color="secondary"
+          onClick={handleSubmit}
+          variant="contained"
+        >
           Create New Owner
         </commonImports.Button>
       </commonImports.DialogActions>
     </commonImports.Dialog>
   );
 };
-
 
 export default OwnerDetailsLoggedInView;

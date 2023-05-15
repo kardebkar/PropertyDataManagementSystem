@@ -22,6 +22,8 @@ import {
   Stack,
   TextField,
   Tooltip,
+  FormHelperText,
+  FormControl,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 
@@ -53,4 +55,6 @@ export  {
   Tooltip,
   Delete,
   Edit,
+  FormHelperText,
+  FormControl,
 }; 
