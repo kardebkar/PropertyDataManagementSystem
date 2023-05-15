@@ -9,6 +9,8 @@ import * as commonImports from "../../commonCode/importMRTRelated";
 //This stores all the users retrieved from the database
 let usersArr: UserModel.User[] = [];
 
+
+
 const OwnerDetailsLoggedInView = () => {
   //-----------------All the State Declarations Starts Here-----------------
   const [ownerDetailsArr, setOwnerDetailsArr] = commonImports.useState<
@@ -18,6 +20,8 @@ const OwnerDetailsLoggedInView = () => {
   const [validationErrors, setValidationErrors] = commonImports.useState<{
     [cellId: string]: string;
   }>({});
+  const [open, setOpen] = commonImports.useState(false);
+  const [message, setMessage] = commonImports.useState('');
 
   //-----------------All the State Declarations Ends Here-----------------
 
@@ -99,16 +103,21 @@ const OwnerDetailsLoggedInView = () => {
         return;
       }
       //send api delete request here, then refetch or update local table data for re-render
-
-      OwnerDetailsApi.deleteOwnerDetails(row.getValue("_id")).then(() => {
-        console.log("Owner Deleted!");
-      });
-
-      OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
-        setOwnerDetailsArr(ownerDetails);
-        console.log(ownerDetails);
-      });
-    },
+try{
+  OwnerDetailsApi.deleteOwnerDetails(row.getValue("_id")).then(() => {
+    console.log("Owner Deleted!");
+    const isDeleted = true;
+    if (isDeleted) {
+       // After successful deletion, set the message and open the dialog
+  setMessage(`Owner ${row.getValue("ownerName")} deleted successfully.`);
+      setOpen(true);
+    }
+  });
+}
+catch (error) {
+  console.error('Failed to delete item:', error);
+}
+},
     [ownerDetailsArr]
   );
 
@@ -231,8 +240,19 @@ const OwnerDetailsLoggedInView = () => {
     [getCommonEditTextFieldProps]
   );
 
+  const handleOk = () => {
+    // Perform the operation you want when the OK button is clicked
+    console.log("OK button has been clicked!");
+    OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
+      setOwnerDetailsArr(ownerDetails);
+      console.log(ownerDetails);
+  });
+    setOpen(false); // Close the dialog
+  };
+
   return (
     <>
+      <commonImports.SuccessDialog open={open} handleClose={() => setOpen(false)} handleOk={handleOk} message={message} />
       <h1>Owner Details Logged In View</h1>
       <commonImports.Container className={ownerDetailsPageStyle.pageContainer}>
         <commonImports.MaterialReactTable
