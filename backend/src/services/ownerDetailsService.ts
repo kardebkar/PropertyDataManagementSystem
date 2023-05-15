@@ -90,6 +90,80 @@ export const createOwnerDetails: RequestHandler<
   }
 };
 
+
+export const createOwnerDetailsArr: RequestHandler<
+  unknown,
+  unknown,
+  IOwnerDetailsCreateModel[],
+  unknown
+> = async (req, res, next) => {
+
+  const ownersCreatedArr:IOwnerDetailsCreateModel[]=[];
+  let newOwner:any;
+
+  req.body.forEach(element => {
+    const userId = element.userId;
+    const ownerName = element.ownerName;
+    const ownerMobileNo = element.ownerMobileNo;
+    const ownerEmail = element.ownerEmail;
+    const ownerWebsite = element.ownerWebsite;
+
+    try {
+      if (
+        !userId ||
+        !ownerName ||
+        !ownerMobileNo ||
+        !ownerEmail ||
+        !ownerWebsite
+      ) {
+        throw createHttpError(400, "Parameters Missing!");
+      }
+      let existingOwnerName
+      IOwnerDetailsMainModel.findOne({
+        ownerName: ownerName,
+      }).exec().then((result)=>{existingOwnerName=result;});
+  
+      if (existingOwnerName) {
+        throw createHttpError(
+          409,
+          "Owner Name already taken. Please choose a different one."
+        );
+      }
+
+      let existingEmail
+      IOwnerDetailsMainModel.findOne({
+        ownerEmail: ownerEmail,
+      }).exec().then((result)=>{existingEmail=result;});
+  
+      if (existingEmail) {
+        throw createHttpError(
+          409,
+          "An Owner with this email address already exists. Please choose a different one."
+        );
+      }
+      
+      
+      IOwnerDetailsMainModel.create({
+        userId: userId,
+        ownerName: ownerName,
+        ownerMobileNo: ownerMobileNo,
+        ownerEmail: ownerEmail,
+        ownerWebsite: ownerWebsite,
+      }).then((result)=>{newOwner=result;});
+
+      ownersCreatedArr.push(newOwner);
+
+      
+      
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  res.status(201).json(ownersCreatedArr);
+
+};
+
 export const updateOwnerDetails: RequestHandler<
   IOwnerDetailsUpdateParamsModel,
   unknown,
