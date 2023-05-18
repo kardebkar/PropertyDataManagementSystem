@@ -1,15 +1,19 @@
+//------------------------------------Imports Section------------------------
 import * as OwnerDetailsApi from "../../network/ownerDetailsApi";
 import * as UsersApi from "../../network/users_api";
 import * as UserModel from "../../models/user";
 import * as OwnerDetailsModel from "../../models/ownerDetails";
 import ownerDetailsPageStyle from "../../styles/OwnerDetailsPage.module.css";
-
 import * as commonImports from "../../commonCode/importMRTRelated";
 
-//This stores all the users retrieved from the database
-let usersArr: UserModel.User[] = [];
+import { CreateNewRowStrategy } from './../CommonElements/Strategy/CreateNewRowStrategy';
+import { SaveRowEditsStrategy } from './../CommonElements/Strategy/SaveRowEditsStrategy';
+import { DeleteRowStrategy } from './../CommonElements/Strategy/DeleteRowStrategy';
+//-------------------------------End of Imports Section---------------------
 
-
+//-----------------------------All The Global Variables Declarations------------------------
+let usersArr: UserModel.User[] = []; //This stores all the users retrieved from the database
+//-----------------------------End of All The Global Variables Declarations------------------------
 
 const OwnerDetailsLoggedInView = () => {
   //-----------------All the State Declarations Starts Here-----------------
@@ -21,72 +25,30 @@ const OwnerDetailsLoggedInView = () => {
     [cellId: string]: string;
   }>({});
   const [open, setOpen] = commonImports.useState(false);
-  const [message, setMessage] = commonImports.useState('');
+  const [message, setMessage] = commonImports.useState("");
+
+  const createNewRowStrategy = new CreateNewRowStrategy();
+  const saveRowEditsStrategy = new SaveRowEditsStrategy();
+  const deleteRowStrategy = new DeleteRowStrategy();
 
   //-----------------All the State Declarations Ends Here-----------------
 
   //-----------------All the Function Declarations Starts Here-----------------
 
   //This function is called when the user clicks on the ADD button
-  const handleCreateNewRow = (
+  const handleCreateNewRow = async (
     values: OwnerDetailsModel.IOwnerDetailsViewModel
   ) => {
     ownerDetailsArr.push(values);
     setOwnerDetailsArr([...ownerDetailsArr]);
-
-    const insertOwnerDetailsInput: OwnerDetailsModel.IOwnerDetailsViewModel = {
-      _id: values._id,
-      userId: values.userId,
-      ownerName: values.ownerName,
-      ownerMobileNo: values.ownerMobileNo,
-      ownerEmail: values.ownerEmail,
-      ownerWebsite: values.ownerWebsite,
-      createdAt: values.createdAt,
-      updatedAt: values.updatedAt,
-    };
-
-    // Send the API request to update the Owner
-    OwnerDetailsApi.createOwnerDetails(insertOwnerDetailsInput).then(() => {
-      OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
-        setOwnerDetailsArr(ownerDetails);
-        console.log("Owner Details added!");
-        console.log(ownerDetails);
-      });
-    });
+    await createNewRowStrategy.handle(values);
   };
 
   //This function is called when the user clicks on the UPDATE button
   const handleSaveRowEdits: commonImports.MaterialReactTableProps<OwnerDetailsModel.IOwnerDetailsViewModel>["onEditingRowSave"] =
     async ({ exitEditingMode, row, values }) => {
-      if (!Object.keys(validationErrors).length) {
-        ownerDetailsArr[row.index] = values;
-
-        //send/receive api updates here, then refetch or update local table data for re-render
-        const updatedOwnerDetails: OwnerDetailsModel.IOwnerDetailsViewModel = {
-          _id: values._id,
-          userId: values.userId,
-          ownerName: values.ownerName,
-          ownerMobileNo: values.ownerMobileNo,
-          ownerEmail: values.ownerEmail,
-          ownerWebsite: values.ownerWebsite,
-          createdAt: values.createdAt,
-          updatedAt: values.updatedAt,
-        };
-
-        // Send the API request to update the Owner
-        await OwnerDetailsApi.updateOwnerDetails(
-          updatedOwnerDetails._id,
-          updatedOwnerDetails
-        );
-
-        OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
-          setOwnerDetailsArr(ownerDetails);
-          setMessage(`Owner ${row.getValue("ownerName")} Updated successfully.`);
-          setOpen(true);
-          console.log(ownerDetails);
-        });
-        exitEditingMode(); //required to exit editing mode and close modal
-      }
+      ownerDetailsArr[row.index] = values;
+      await saveRowEditsStrategy.handle(values,validationErrors, row,setMessage, setOpen, exitEditingMode);
     };
 
   //This function is called when the user clicks on the CANCEL button
@@ -96,39 +58,21 @@ const OwnerDetailsLoggedInView = () => {
 
   //This function is called when the user clicks on the DELETE button
   const handleDeleteRow = commonImports.useCallback(
-    (row: commonImports.MRT_Row<OwnerDetailsModel.IOwnerDetailsViewModel>) => {
-      if (
-        !window.confirm(
-          `Are you sure you want to delete ${row.getValue("ownerName")}`
-        )
-      ) {
-        return;
-      }
-      //send api delete request here, then refetch or update local table data for re-render
-try{
-  OwnerDetailsApi.deleteOwnerDetails(row.getValue("_id")).then(() => {
-    console.log("Owner Deleted!");
-    const isDeleted = true;
-    if (isDeleted) {
-       // After successful deletion, set the message and open the dialog
-  setMessage(`Owner ${row.getValue("ownerName")} deleted successfully.`);
-      setOpen(true);
-    }
-  });
-}
-catch (error) {
-  console.error('Failed to delete item:', error);
-}
-},
+    async (row: commonImports.MRT_Row<OwnerDetailsModel.IOwnerDetailsViewModel>) => {
+      ownerDetailsArr.splice(row.index, 1);
+      setOwnerDetailsArr([...ownerDetailsArr]);
+      await deleteRowStrategy.handle(null,null,row,setMessage,setOpen,null);
+    },
     [ownerDetailsArr]
   );
+
+
 
   //This function is called when the user clicks on the EDIT button to set the Edit Modal Properties of The Columns.
   const getCommonEditTextFieldProps = commonImports.useCallback(
     (
       cell: commonImports.MRT_Cell<OwnerDetailsModel.IOwnerDetailsViewModel>
     ): commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>["muiTableBodyCellEditTextFieldProps"] => {
-      
       if (cell.column.id === "userId") {
         return {
           select: true,
@@ -157,19 +101,18 @@ catch (error) {
             //cell.setEditingCellValue(value);
           },
         };
-      }
-      else if(cell.column.id === "_id") {
+      } else if (cell.column.id === "_id") {
         return {
           style: { display: "none" },
         };
-      }
-      else if(cell.column.id === "createdAt" ||
-      cell.column.id === "updatedAt"
-      ){return {
-        style: { display: "none" },
-      };
-      }
-      else {
+      } else if (
+        cell.column.id === "createdAt" ||
+        cell.column.id === "updatedAt"
+      ) {
+        return {
+          style: { display: "none" },
+        };
+      } else {
         return {
           error: !!validationErrors[cell.id],
           helperText: validationErrors[cell.id],
@@ -191,8 +134,6 @@ catch (error) {
           },
         };
       }
-
-
     },
     [validationErrors]
   );
@@ -255,7 +196,7 @@ catch (error) {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      
+
       {
         header: "Owner Details Phone",
         accessorKey: "ownerMobileNo",
@@ -309,13 +250,18 @@ catch (error) {
     OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
       setOwnerDetailsArr(ownerDetails);
       console.log(ownerDetails);
-  });
+    });
     setOpen(false); // Close the dialog
   };
 
   return (
     <>
-      <commonImports.SuccessDialog open={open} handleClose={() => setOpen(false)} handleOk={handleOk} message={message} />
+      <commonImports.SuccessDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+        handleOk={handleOk}
+        message={message}
+      />
       <h1>Owner Details Logged In View</h1>
       <commonImports.Container className={ownerDetailsPageStyle.pageContainer}>
         <commonImports.MaterialReactTable
