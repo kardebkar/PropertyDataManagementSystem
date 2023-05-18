@@ -81,6 +81,8 @@ const OwnerDetailsLoggedInView = () => {
 
         OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
           setOwnerDetailsArr(ownerDetails);
+          setMessage(`Owner ${row.getValue("ownerName")} Updated successfully.`);
+          setOpen(true);
           console.log(ownerDetails);
         });
         exitEditingMode(); //required to exit editing mode and close modal
@@ -126,35 +128,71 @@ catch (error) {
     (
       cell: commonImports.MRT_Cell<OwnerDetailsModel.IOwnerDetailsViewModel>
     ): commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>["muiTableBodyCellEditTextFieldProps"] => {
-      return cell.column.id === ""
-        ? {
-            select: true,
-            children: usersArr.map((option) => (
-              <commonImports.MenuItem key={option._id} value={option._id}>
-                {option.username + " - " + option.role}
-              </commonImports.MenuItem>
-            )),
-          }
-        : {
-            error: !!validationErrors[cell.id],
-            helperText: validationErrors[cell.id],
-            onChange: (e) => {
-              const value = e.target.value;
-              if (!value) {
-                setValidationErrors((prev) => ({
-                  ...prev,
-                  [cell.id]: "Required",
-                }));
-              } else {
-                setValidationErrors((prev) => {
-                  const next = { ...prev };
-                  delete next[cell.id];
-                  return next;
-                });
-              }
-              //cell.setEditingCellValue(value);
-            },
-          };
+      
+      if (cell.column.id === "userId") {
+        return {
+          select: true,
+          label: "User Name",
+          children: usersArr.map((option) => (
+            <commonImports.MenuItem key={option._id} value={option._id}>
+              {option.username}-{option.role}
+            </commonImports.MenuItem>
+          )),
+          error: !!validationErrors[cell.id],
+          helperText: validationErrors[cell.id],
+          onChange: (e) => {
+            const value = e.target.value;
+            if (!value) {
+              setValidationErrors((prev) => ({
+                ...prev,
+                [cell.id]: "Required",
+              }));
+            } else {
+              setValidationErrors((prev) => {
+                const next = { ...prev };
+                delete next[cell.id];
+                return next;
+              });
+            }
+            //cell.setEditingCellValue(value);
+          },
+        };
+      }
+      else if(cell.column.id === "_id") {
+        return {
+          style: { display: "none" },
+        };
+      }
+      else if(cell.column.id === "createdAt" ||
+      cell.column.id === "updatedAt"
+      ){return {
+        style: { display: "none" },
+      };
+      }
+      else {
+        return {
+          error: !!validationErrors[cell.id],
+          helperText: validationErrors[cell.id],
+          onChange: (e) => {
+            const value = e.target.value;
+            if (!value) {
+              setValidationErrors((prev) => ({
+                ...prev,
+                [cell.id]: "Required",
+              }));
+            } else {
+              setValidationErrors((prev) => {
+                const next = { ...prev };
+                delete next[cell.id];
+                return next;
+              });
+            }
+            //cell.setEditingCellValue(value);
+          },
+        };
+      }
+
+
     },
     [validationErrors]
   );
@@ -187,6 +225,9 @@ catch (error) {
         enableHiding: false, //disable hiding on this column
         enableEditing: false, //disable editing on this column
         editable: "never",
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
       {
         header: "User Name",
@@ -203,22 +244,38 @@ catch (error) {
 
           return null;
         },
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
       {
         header: "Owner Details Name",
         accessorKey: "ownerName",
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
+      
       {
         header: "Owner Details Phone",
         accessorKey: "ownerMobileNo",
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
       {
         header: "Owner Details Email",
         accessorKey: "ownerEmail",
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
       {
         header: "Owner Details Website",
         accessorKey: "ownerWebsite",
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
       {
         header: "Created Date",
@@ -227,6 +284,9 @@ catch (error) {
         Cell: ({ cell }) => (
           <>{commonImports.formatDate(cell.getValue<string>())}</>
         ),
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
       {
         header: "Updated Date",
@@ -235,6 +295,9 @@ catch (error) {
         Cell: ({ cell }) => (
           <>{commonImports.formatDate(cell.getValue<string>())}</>
         ),
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
       },
     ],
     [getCommonEditTextFieldProps]
