@@ -1,7 +1,7 @@
 // CreateNewRowStrategy.ts
 import { ActionStrategy } from './ActionStrategy';
-import * as OwnerDetailsModel from "../../../models/ownerDetails";
-import * as OwnerDetailsApi from "../../../network/ownerDetailsApi";
+import * as OwnerDetailsModel from "../../../../models/ownerDetails";
+import * as OwnerDetailsApi from "../../../../network/ownerDetailsApi";
 
 export class CreateNewRowStrategy implements ActionStrategy {
   async handle(values: OwnerDetailsModel.IOwnerDetailsViewModel): Promise<void> {

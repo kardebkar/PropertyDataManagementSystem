@@ -1,7 +1,7 @@
 // SaveRowEditsStrategy.ts
 import { ActionStrategy } from './ActionStrategy';
-import * as OwnerDetailsModel from "../../../models/ownerDetails";
-import * as OwnerDetailsApi from "../../../network/ownerDetailsApi";
+import * as OwnerDetailsModel from "../../../../models/ownerDetails";
+import * as OwnerDetailsApi from "../../../../network/ownerDetailsApi";
 
 export class SaveRowEditsStrategy implements ActionStrategy {
   async handle(values: OwnerDetailsModel.IOwnerDetailsViewModel, validationErrors: Object, row:any, setMessage: any, setOpen:any, exitEditingMode:any): Promise<void> {
@@ -27,7 +27,7 @@ export class SaveRowEditsStrategy implements ActionStrategy {
           updatedOwnerDetails
         );
 
-        OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
+        OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails:OwnerDetailsModel.IOwnerDetailsViewModel[]) => {
           //setOwnerDetailsArr(ownerDetails);
           setMessage(
             `Owner ${row.getValue("ownerName")} Updated successfully.`

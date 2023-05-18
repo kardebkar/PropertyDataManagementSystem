@@ -6,17 +6,17 @@ import * as OwnerDetailsModel from "../../models/ownerDetails";
 import ownerDetailsPageStyle from "../../styles/OwnerDetailsPage.module.css";
 import * as commonImports from "../../commonCode/importMRTRelated";
 
-import { CreateNewRowStrategy } from './../CommonElements/Strategy/CreateNewRowStrategy';
-import { SaveRowEditsStrategy } from './../CommonElements/Strategy/SaveRowEditsStrategy';
-import { DeleteRowStrategy } from './../CommonElements/Strategy/DeleteRowStrategy';
+import { CreateNewRowStrategy } from "./commonElement/Strategy/CreateNewRowStrategy";
+import { SaveRowEditsStrategy } from './commonElement/Strategy/SaveRowEditsStrategy';
+import { DeleteRowStrategy } from './commonElement/Strategy/DeleteRowStrategy';
+
+import { GridFactory } from './commonElement/Factory/GridFactory'; // Adjust the path to your GridFactory file
 //-------------------------------End of Imports Section---------------------
 
-//-----------------------------All The Global Variables Declarations------------------------
+
 let usersArr: UserModel.User[] = []; //This stores all the users retrieved from the database
-//-----------------------------End of All The Global Variables Declarations------------------------
 
 const OwnerDetailsLoggedInView = () => {
-  //-----------------All the State Declarations Starts Here-----------------
   const [ownerDetailsArr, setOwnerDetailsArr] = commonImports.useState<
     OwnerDetailsModel.IOwnerDetailsViewModel[]
   >([]);
@@ -31,11 +31,6 @@ const OwnerDetailsLoggedInView = () => {
   const saveRowEditsStrategy = new SaveRowEditsStrategy();
   const deleteRowStrategy = new DeleteRowStrategy();
 
-  //-----------------All the State Declarations Ends Here-----------------
-
-  //-----------------All the Function Declarations Starts Here-----------------
-
-  //This function is called when the user clicks on the ADD button
   const handleCreateNewRow = async (
     values: OwnerDetailsModel.IOwnerDetailsViewModel
   ) => {
@@ -65,8 +60,6 @@ const OwnerDetailsLoggedInView = () => {
     },
     [ownerDetailsArr]
   );
-
-
 
   //This function is called when the user clicks on the EDIT button to set the Edit Modal Properties of The Columns.
   const getCommonEditTextFieldProps = commonImports.useCallback(
@@ -139,6 +132,7 @@ const OwnerDetailsLoggedInView = () => {
   );
 
   //-----------------All the Function Declarations Ends Here-----------------
+  
 
   //This useEffect is called when the page is loaded for the first time
   commonImports.useEffect(() => {
@@ -154,95 +148,7 @@ const OwnerDetailsLoggedInView = () => {
   }, []);
 
   //This is Used to set the columns of the table
-  const ownerDetailsGridColumns = commonImports.useMemo<
-    commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>[]
-  >(
-    () => [
-      {
-        header: "Owner Details Id",
-        accessorKey: "_id",
-        enableColumnOrdering: false, //disable column ordering on this column
-        enableSorting: false,
-        enableHiding: false, //disable hiding on this column
-        enableEditing: false, //disable editing on this column
-        editable: "never",
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        header: "User Name",
-        accessorKey: "userId",
-        //customize normal cell render on normal non-aggregated rows
-        Cell: ({ cell }) => {
-          const userId = cell.getValue<string>();
-          const user = usersArr.find((user) => user._id === userId);
-
-          if (user) {
-            const { username, role } = user;
-            return <>{`${username} - ${role}`}</>;
-          }
-
-          return null;
-        },
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        header: "Owner Details Name",
-        accessorKey: "ownerName",
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-
-      {
-        header: "Owner Details Phone",
-        accessorKey: "ownerMobileNo",
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        header: "Owner Details Email",
-        accessorKey: "ownerEmail",
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        header: "Owner Details Website",
-        accessorKey: "ownerWebsite",
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        header: "Created Date",
-        accessorKey: "createdAt",
-        //customize normal cell render on normal non-aggregated rows
-        Cell: ({ cell }) => (
-          <>{commonImports.formatDate(cell.getValue<string>())}</>
-        ),
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        header: "Updated Date",
-        accessorKey: "updatedAt",
-        //customize normal cell render on normal non-aggregated rows
-        Cell: ({ cell }) => (
-          <>{commonImports.formatDate(cell.getValue<string>())}</>
-        ),
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-    ],
-    [getCommonEditTextFieldProps]
-  );
+  const ownerDetailsGridColumns =GridFactory(getCommonEditTextFieldProps, usersArr);
 
   const handleOk = () => {
     // Perform the operation you want when the OK button is clicked
