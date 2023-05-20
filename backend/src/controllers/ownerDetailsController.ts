@@ -14,6 +14,9 @@ export const getOneOwnerDetails:RequestHandler = async(req,res,next)=>{
 export const createOwnerDetails: RequestHandler<unknown, unknown, IOwnerDetailsCreateModel, unknown> = async(req, res, next)=>{
     await OwnerDetailsService.createOwnerDetails(req,res,next);
 }
+export const createOwnerDetailsArr: RequestHandler<unknown, unknown, IOwnerDetailsCreateModel[], unknown> = async(req, res, next)=>{
+    await OwnerDetailsService.createOwnerDetailsArr(req,res,next);
+}
 
 
 export const updateOwnerDetails: RequestHandler<IOwnerDetailsUpdateParamsModel, unknown, IOwnerDetailsUpdateBodyModel, unknown> = async(req, res, next)=>{
