@@ -34,60 +34,60 @@ function App() {
   }, []);
 
   return (
-	<BrowserRouter>
-    <div>
-      <NavBar
-        loggedInUser={loggedInUser}
-        onLoginClicked={() => setShowLoginModal(true)}
-        onSignUpClicked={() => setShowSignUpModal(true)}
-        onLogoutSuccessful={() => setLoggedInUser(null)}
-      />
-      <Container className={styles.pageContainer}>
-		<Routes>
-			<Route 
-			
-			path='/'
-			element={<NotesPage loggedInUser={loggedInUser} />}
-			/>
-      <Route 
-			
-			path='/adminDashboardPage'
-			element={<AdminDashboardPage loggedInUser={loggedInUser} />}
-			/>
-      <Route
-      path='/ownerDetailsPage'
-      element={<OwnerDetailsPage loggedInUser={loggedInUser} />}
-      />
-			<Route
-				path='/privacy'
-				element={<PrivacyPage />}
-			/>
-			<Route 
-			path='/*'
-			element={<NotFoundPage />}
-			/>
-		</Routes>
-	  </Container>
-      {showSignUpModal && (
-        <SignUpModal
-          onDismiss={() => setShowSignUpModal(false)}
-          onSignUpSuccessful={(user) => {
-            setLoggedInUser(user);
-            setShowSignUpModal(false);
-          }}
+    <BrowserRouter>
+      <div>
+        <NavBar
+          loggedInUser={loggedInUser}
+          onLoginClicked={() => setShowLoginModal(true)}
+          onSignUpClicked={() => setShowSignUpModal(true)}
+          onLogoutSuccessful={() => setLoggedInUser(null)}
         />
-      )}
-      {showLoginModal && (
-        <LoginModal
-          onDismiss={() => setShowLoginModal(false)}
-          onLoginSuccessful={(user) => {
-            setLoggedInUser(user);
-            setShowLoginModal(false);
-          }}
-        />
-      )}
-    </div>
-	</BrowserRouter>
+        <Container className={styles.pageContainer}>
+          <Routes>
+            <Route
+
+              path='/'
+              element={<NotesPage loggedInUser={loggedInUser} />}
+            />
+            <Route
+
+              path='/adminDashboardPage'
+              element={<AdminDashboardPage loggedInUser={loggedInUser} />}
+            />
+            <Route
+              path='/ownerDetailsPage'
+              element={<OwnerDetailsPage loggedInUser={loggedInUser} />}
+            />
+            <Route
+              path='/privacy'
+              element={<PrivacyPage />}
+            />
+            <Route
+              path='/*'
+              element={<NotFoundPage />}
+            />
+          </Routes>
+        </Container>
+        {showSignUpModal && (
+          <SignUpModal
+            onDismiss={() => setShowSignUpModal(false)}
+            onSignUpSuccessful={(user) => {
+              setLoggedInUser(user);
+              setShowSignUpModal(false);
+            }}
+          />
+        )}
+        {showLoginModal && (
+          <LoginModal
+            onDismiss={() => setShowLoginModal(false)}
+            onLoginSuccessful={(user) => {
+              setLoggedInUser(user);
+              setShowLoginModal(false);
+            }}
+          />
+        )}
+      </div>
+    </BrowserRouter>
   );
 }
 
