@@ -6,10 +6,12 @@ import * as OwnerDetailsModel from "../../models/ownerDetails";
 import ownerDetailsPageStyle from "../../styles/OwnerDetailsPage.module.css";
 import * as commonImports from "../../commonCode/importMRTRelated";
 
+//Strategy DesignPattern Used for the Create, Update and Delete Operations
 import { CreateNewRowStrategy } from "./commonElement/Strategy/CreateNewRowStrategy";
 import { SaveRowEditsStrategy } from './commonElement/Strategy/SaveRowEditsStrategy';
 import { DeleteRowStrategy } from './commonElement/Strategy/DeleteRowStrategy';
 
+//Factory DesignPattern Used for the Main Grid View
 import { GridFactory } from './commonElement/Factory/GridFactory'; // Adjust the path to your GridFactory file
 //-------------------------------End of Imports Section---------------------
 
@@ -393,3 +395,4 @@ export const CreateNewAccountModal = ({
 };
 
 export default OwnerDetailsLoggedInView;
+
