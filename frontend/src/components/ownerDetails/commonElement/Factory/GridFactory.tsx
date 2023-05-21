@@ -11,7 +11,7 @@ type FieldConfig = {
 };
 
 export const GridFactory = (getCommonEditTextFieldProps: any, usersArr: any[]) => {
-    const ownerDetailsGridColumns = commonImports.useMemo<
+  const ownerDetailsGridColumns = commonImports.useMemo<
     commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>[]
   >(
     () => [
@@ -34,7 +34,7 @@ export const GridFactory = (getCommonEditTextFieldProps: any, usersArr: any[]) =
         Cell: ({ cell }) => {
           const userId = cell.getValue<string>();
           const user = usersArr.find((user) => user._id === userId);
-         
+
           if (user) {
             const { username, role } = user;
             return <>{`${username} - ${role}`}</>;
@@ -96,7 +96,7 @@ export const GridFactory = (getCommonEditTextFieldProps: any, usersArr: any[]) =
         }),
       },
     ],
-    [getCommonEditTextFieldProps]
+    [getCommonEditTextFieldProps, usersArr]
   );
   return ownerDetailsGridColumns;
 }

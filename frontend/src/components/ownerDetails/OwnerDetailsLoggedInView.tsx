@@ -36,16 +36,18 @@ const OwnerDetailsLoggedInView = () => {
   const handleCreateNewRow = async (
     values: OwnerDetailsModel.IOwnerDetailsViewModel
   ) => {
-    ownerDetailsArr.push(values);
+    ownerDetailsArr.push(values); // This needs to be implementd later on instead of below api call as state manangemnt
     setOwnerDetailsArr([...ownerDetailsArr]);
     await createNewRowStrategy.handle(values);
+
   };
 
   //This function is called when the user clicks on the UPDATE button
   const handleSaveRowEdits: commonImports.MaterialReactTableProps<OwnerDetailsModel.IOwnerDetailsViewModel>["onEditingRowSave"] =
     async ({ exitEditingMode, row, values }) => {
       ownerDetailsArr[row.index] = values;
-      await saveRowEditsStrategy.handle(values,validationErrors, row,setMessage, setOpen, exitEditingMode);
+      await saveRowEditsStrategy.handle(values, validationErrors, row, setMessage, setOpen, exitEditingMode);
+
     };
 
   //This function is called when the user clicks on the CANCEL button
@@ -58,7 +60,7 @@ const OwnerDetailsLoggedInView = () => {
     async (row: commonImports.MRT_Row<OwnerDetailsModel.IOwnerDetailsViewModel>) => {
       ownerDetailsArr.splice(row.index, 1);
       setOwnerDetailsArr([...ownerDetailsArr]);
-      await deleteRowStrategy.handle(null,null,row,setMessage,setOpen,null);
+      await deleteRowStrategy.handle(null, null, row, setMessage, setOpen, null);
     },
     [ownerDetailsArr]
   );
@@ -134,7 +136,7 @@ const OwnerDetailsLoggedInView = () => {
   );
 
   //-----------------All the Function Declarations Ends Here-----------------
-  
+
 
   //This useEffect is called when the page is loaded for the first time
   commonImports.useEffect(() => {
@@ -150,7 +152,7 @@ const OwnerDetailsLoggedInView = () => {
   }, []);
 
   //This is Used to set the columns of the table
-  const ownerDetailsGridColumns =GridFactory(getCommonEditTextFieldProps, usersArr);
+  const ownerDetailsGridColumns = GridFactory(getCommonEditTextFieldProps, usersArr);
 
   const handleOk = () => {
     // Perform the operation you want when the OK button is clicked
@@ -345,7 +347,7 @@ export const CreateNewAccountModal = ({
                   </commonImports.Select>
                   <commonImports.FormHelperText>
                     {column.accessorKey &&
-                    errors.hasOwnProperty(column.accessorKey)
+                      errors.hasOwnProperty(column.accessorKey)
                       ? errors[column.accessorKey]
                       : ""}
                   </commonImports.FormHelperText>
@@ -371,7 +373,7 @@ export const CreateNewAccountModal = ({
                   error={column.accessorKey && !!errors[column.accessorKey]}
                   helperText={
                     column.accessorKey &&
-                    errors.hasOwnProperty(column.accessorKey)
+                      errors.hasOwnProperty(column.accessorKey)
                       ? errors[column.accessorKey]
                       : ""
                   }
