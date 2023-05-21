@@ -1,6 +1,5 @@
 Notes App
 This is a simple note-taking application built with React, Node.js, and MongoDB.
-
 Features
 Users can sign up and log in to the application
 Users can create, edit, and delete notes
