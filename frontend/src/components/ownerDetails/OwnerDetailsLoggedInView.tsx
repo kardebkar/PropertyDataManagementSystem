@@ -36,7 +36,7 @@ const OwnerDetailsLoggedInView = () => {
   const handleCreateNewRow = async (
     values: OwnerDetailsModel.IOwnerDetailsViewModel
   ) => {
-    ownerDetailsArr.push(values); // This needs to be implementd later on instead of below api call as state manangemnt
+    ownerDetailsArr.push(values); // This needs to be implemented later on instead of below api call as state management.
     setOwnerDetailsArr([...ownerDetailsArr]);
     await createNewRowStrategy.handle(values);
 
