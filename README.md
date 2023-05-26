@@ -41,7 +41,7 @@
 
 ## About The Project
 
-![Screen Shot](images/screenshot.png)
+![Screen Shot](./.github/images/fixed-asset.png)
 
 PDMS (Property Data Management System) is a comprehensive software solution designed to streamline and simplify property management tasks. Whether you're a real estate agency, property owner, or property manager, PDMS offers a user-friendly interface and powerful features to efficiently manage property data, tenants, maintenance requests, and more.
 
