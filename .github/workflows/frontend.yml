@@ -18,14 +18,17 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
+        working-directory: frontend
         run: npm install
 
       # - name: Run tests
       #   run: npm test
 
       - name: Build
+        working-directory: frontend
         run: npm run build
 
       - name: Deploy
+        working-directory: frontend
         run: |
           # Add commands to deploy your frontend code here
