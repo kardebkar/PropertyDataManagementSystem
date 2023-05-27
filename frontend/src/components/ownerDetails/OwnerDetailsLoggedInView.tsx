@@ -36,10 +36,12 @@ const OwnerDetailsLoggedInView = () => {
   const handleCreateNewRow = async (
     values: OwnerDetailsModel.IOwnerDetailsViewModel
   ) => {
-    ownerDetailsArr.push(values); // This needs to be implemented later on instead of below api call as state management.
-    setOwnerDetailsArr([...ownerDetailsArr]);
-    await createNewRowStrategy.handle(values);
-
+    ownerDetailsArr.push(values);
+    createNewRowStrategy.handle(values, {}, null, setMessage, setOpen).then(() => {
+      OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails: OwnerDetailsModel.IOwnerDetailsViewModel[]) => {
+        setOwnerDetailsArr(ownerDetails);
+      });
+    }).catch((error) => { }).finally(() => { });
   };
 
   //This function is called when the user clicks on the UPDATE button
@@ -58,6 +60,13 @@ const OwnerDetailsLoggedInView = () => {
   //This function is called when the user clicks on the DELETE button
   const handleDeleteRow = commonImports.useCallback(
     async (row: commonImports.MRT_Row<OwnerDetailsModel.IOwnerDetailsViewModel>) => {
+      if (
+        !window.confirm(
+          `Are you sure you want to delete ${row.getValue("ownerName")}`
+        )
+      ) {
+        return;
+      }
       ownerDetailsArr.splice(row.index, 1);
       setOwnerDetailsArr([...ownerDetailsArr]);
       await deleteRowStrategy.handle(null, null, row, setMessage, setOpen, null);
@@ -142,12 +151,10 @@ const OwnerDetailsLoggedInView = () => {
   commonImports.useEffect(() => {
     UsersApi.fetchUsers().then((response) => {
       usersArr = response;
-      console.log(response);
     });
 
     OwnerDetailsApi.getAllOwnerDetails().then((response) => {
       setOwnerDetailsArr(response);
-      console.log(response);
     });
   }, []);
 
@@ -159,7 +166,7 @@ const OwnerDetailsLoggedInView = () => {
     console.log("OK button has been clicked!");
     OwnerDetailsApi.getAllOwnerDetails().then((ownerDetails) => {
       setOwnerDetailsArr(ownerDetails);
-      console.log(ownerDetails);
+
     });
     setOpen(false); // Close the dialog
   };
