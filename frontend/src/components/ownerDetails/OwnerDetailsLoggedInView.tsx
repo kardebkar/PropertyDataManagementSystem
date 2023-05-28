@@ -11,6 +11,8 @@ import { CreateNewRowStrategy } from "./commonElement/Strategy/CreateNewRowStrat
 import { SaveRowEditsStrategy } from './commonElement/Strategy/SaveRowEditsStrategy';
 import { DeleteRowStrategy } from './commonElement/Strategy/DeleteRowStrategy';
 
+import  getEditTextFieldProps  from './commonElement/GetEditTextFieldProps'; // Adjust the path to your GetEditTextFieldProps file
+
 //Factory DesignPattern Used for the Main Grid View
 import { GridFactory } from './commonElement/Factory/GridFactory'; // Adjust the path to your GridFactory file
 //-------------------------------End of Imports Section---------------------
@@ -75,74 +77,7 @@ const OwnerDetailsLoggedInView = () => {
   );
 
   //This function is called when the user clicks on the EDIT button to set the Edit Modal Properties of The Columns.
-  const getCommonEditTextFieldProps = commonImports.useCallback(
-    (
-      cell: commonImports.MRT_Cell<OwnerDetailsModel.IOwnerDetailsViewModel>
-    ): commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>["muiTableBodyCellEditTextFieldProps"] => {
-      if (cell.column.id === "userId") {
-        return {
-          select: true,
-          label: "User Name",
-          children: usersArr.map((option) => (
-            <commonImports.MenuItem key={option._id} value={option._id}>
-              {option.username}-{option.role}
-            </commonImports.MenuItem>
-          )),
-          error: !!validationErrors[cell.id],
-          helperText: validationErrors[cell.id],
-          onChange: (e) => {
-            const value = e.target.value;
-            if (!value) {
-              setValidationErrors((prev) => ({
-                ...prev,
-                [cell.id]: "Required",
-              }));
-            } else {
-              setValidationErrors((prev) => {
-                const next = { ...prev };
-                delete next[cell.id];
-                return next;
-              });
-            }
-            //cell.setEditingCellValue(value);
-          },
-        };
-      } else if (cell.column.id === "_id") {
-        return {
-          style: { display: "none" },
-        };
-      } else if (
-        cell.column.id === "createdAt" ||
-        cell.column.id === "updatedAt"
-      ) {
-        return {
-          style: { display: "none" },
-        };
-      } else {
-        return {
-          error: !!validationErrors[cell.id],
-          helperText: validationErrors[cell.id],
-          onChange: (e) => {
-            const value = e.target.value;
-            if (!value) {
-              setValidationErrors((prev) => ({
-                ...prev,
-                [cell.id]: "Required",
-              }));
-            } else {
-              setValidationErrors((prev) => {
-                const next = { ...prev };
-                delete next[cell.id];
-                return next;
-              });
-            }
-            //cell.setEditingCellValue(value);
-          },
-        };
-      }
-    },
-    [validationErrors]
-  );
+  // const getCommonEditTextFieldProps = getEditTextFieldProps(setValidationErrors, usersArr); 
 
   //-----------------All the Function Declarations Ends Here-----------------
 
@@ -159,7 +94,7 @@ const OwnerDetailsLoggedInView = () => {
   }, []);
 
   //This is Used to set the columns of the table
-  const ownerDetailsGridColumns = GridFactory(getCommonEditTextFieldProps, usersArr);
+  const ownerDetailsGridColumns = GridFactory(getEditTextFieldProps, usersArr,validationErrors,setValidationErrors);
 
   const handleOk = () => {
     // Perform the operation you want when the OK button is clicked
