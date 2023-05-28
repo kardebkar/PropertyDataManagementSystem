@@ -1,6 +1,6 @@
 // GridFactory.tsx
 import * as commonImports from "../../../../commonCode/importMRTRelated";
-import React from 'react';
+import React from "react";
 import * as OwnerDetailsModel from "../../../../models/ownerDetails";
 
 type FieldConfig = {
@@ -10,7 +10,12 @@ type FieldConfig = {
   renderCell?: (cell: any) => JSX.Element;
 };
 
-export const GridFactory = (getCommonEditTextFieldProps: any, usersArr: any[]) => {
+export const GridFactory = (
+  getCommonEditTextFieldProps: any,
+  usersArr: any[],
+  validationErrors: any,
+  setValidationErrors: any
+) => {
   const ownerDetailsGridColumns = commonImports.useMemo<
     commonImports.MRT_ColumnDef<OwnerDetailsModel.IOwnerDetailsViewModel>[]
   >(
@@ -24,7 +29,12 @@ export const GridFactory = (getCommonEditTextFieldProps: any, usersArr: any[]) =
         enableEditing: false, //disable editing on this column
         editable: "never",
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
+          ...getCommonEditTextFieldProps(
+            cell,
+            validationErrors,
+            setValidationErrors,
+            usersArr
+          ),
         }),
       },
       {
@@ -99,4 +109,4 @@ export const GridFactory = (getCommonEditTextFieldProps: any, usersArr: any[]) =
     [getCommonEditTextFieldProps, usersArr]
   );
   return ownerDetailsGridColumns;
-}
+};
