@@ -1,0 +1,35 @@
+# name: Backend Pipeline
+# on:
+#   push:
+#     branches:
+#       - master
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 14
+
+#       - name: Install backend dependencies
+#         working-directory: backend
+#         run: npm install
+
+#       # - name: Run backend tests
+#       #   working-directory: backend
+#       #   run: npm test
+
+#       - name: Build backend
+#         working-directory: backend
+#         run: npm run build
+
+#       - name: Deploy backend
+#         working-directory: backend
+#         run: |
+#           # Add commands to deploy your backend code here
